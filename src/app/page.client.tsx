@@ -28,8 +28,8 @@ interface Player {
   score: number;
 }
 
-function getRooster() {
-  const players = JSON.parse(window.localStorage.getItem("rooster") || "[]") as Player[];
+function getRoster() {
+  const players = JSON.parse(window.localStorage.getItem("roster") || "[]") as Player[];
 
   const map = new Map<Player["name"], Player>();
 
@@ -40,33 +40,33 @@ function getRooster() {
   return map;
 }
 
-function updateRooster(rooster: Map<Player["name"], Player>) {
-  window.localStorage.setItem("rooster", JSON.stringify(Array.from(rooster.values())));
+function updateRoster(roster: Map<Player["name"], Player>) {
+  window.localStorage.setItem("roster", JSON.stringify(Array.from(roster.values())));
 }
 
 export default function HomePageClient() {
-  const roosterTable = useRef<HTMLTableElement>(null);
-  const [players, setPlayers] = useState(() => new Set<Player["name"]>());
-  const [rooster, setRooster] = useState(getRooster);
+  const rosterTable = useRef<HTMLTableElement>(null);
+  const [draft, setDraft] = useState(() => new Set<Player["name"]>());
+  const [roster, setRoster] = useState(getRoster);
   const [teamA, teamB] = useMemo(() => {
-    const draft = Array.from(players).map((name) => rooster.get(name) || {name, score: 0});
+    const players = Array.from(draft).map((name) => roster.get(name) || {name, score: 0});
 
     let bestDiff = Infinity;
     let teams: [Player[], Player[]] = [[], []];
 
-    for (let i = 0; i < 1 << draft.length; i++) {
+    for (let i = 0; i < 1 << players.length; i++) {
       const teamA: Player[] = [];
       const teamB: Player[] = [];
       let sum1 = 0;
       let sum2 = 0;
 
-      for (let j = 0; j < draft.length; j++) {
+      for (let j = 0; j < players.length; j++) {
         if ((i & (1 << j)) !== 0) {
-          teamA.push(draft[j]);
-          sum1 += draft[j].score;
+          teamA.push(players[j]);
+          sum1 += players[j].score;
         } else {
-          teamB.push(draft[j]);
-          sum2 += draft[j].score;
+          teamB.push(players[j]);
+          sum2 += players[j].score;
         }
       }
 
@@ -79,7 +79,7 @@ export default function HomePageClient() {
     }
 
     return teams;
-  }, [players, rooster]);
+  }, [draft, roster]);
 
   async function handlePaste() {
     const clipboard = await navigator.clipboard.readText();
@@ -94,32 +94,32 @@ export default function HomePageClient() {
       return names.concat(player);
     }, []);
 
-    setPlayers(new Set(names));
+    setDraft(new Set(names));
   }
 
-  function handleRoosterAdd(event: React.FormEvent<HTMLFormElement>) {
+  function handleRosterAdd(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const roosterDraft = structuredClone(rooster);
+    const rosterDraft = structuredClone(roster);
 
     const name = (formData.get("name") as string).trim().toLowerCase();
     const score = Number(formData.get("score"));
 
-    roosterDraft.set(name, {name, score});
+    rosterDraft.set(name, {name, score});
 
-    setRooster(roosterDraft);
-    updateRooster(roosterDraft);
+    setRoster(rosterDraft);
+    updateRoster(rosterDraft);
 
     event.currentTarget.reset();
 
     queueMicrotask(() => {
-      roosterTable.current?.scrollTo(0, roosterTable.current.scrollHeight);
+      rosterTable.current?.scrollTo(0, rosterTable.current.scrollHeight);
     });
   }
 
   function handleDraftToggle(name: Player["name"]) {
-    const newDraft = structuredClone(players);
+    const newDraft = structuredClone(draft);
 
     if (newDraft.has(name)) {
       newDraft.delete(name);
@@ -127,20 +127,20 @@ export default function HomePageClient() {
       newDraft.add(name);
     }
 
-    setPlayers(newDraft);
+    setDraft(newDraft);
   }
 
-  function handleRoosterRemove(name: Player["name"]) {
-    const newRooster = structuredClone(rooster);
-    const newDraft = structuredClone(players);
+  function handleRosterRemove(name: Player["name"]) {
+    const newRoster = structuredClone(roster);
+    const newDraft = structuredClone(draft);
 
-    newRooster.delete(name);
+    newRoster.delete(name);
     newDraft.delete(name);
 
-    setRooster(newRooster);
-    setPlayers(newDraft);
+    setRoster(newRoster);
+    setDraft(newDraft);
 
-    updateRooster(newRooster);
+    updateRoster(newRoster);
   }
 
   function handleCopyTeams() {
@@ -157,11 +157,11 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
     <main className="grid gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Rooster</CardTitle>
-          <CardDescription>List of players on the rooster</CardDescription>
+          <CardTitle>Roster</CardTitle>
+          <CardDescription>List of players on the roster</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table ref={roosterTable} className="h-96 overflow-y-auto border">
+          <Table ref={rosterTable} className="h-96 overflow-y-auto border">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[32px] text-right" />
@@ -170,10 +170,10 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
               </TableRow>
             </TableHeader>
             <TableBody className="max-h-96 overflow-y-auto">
-              {Array.from(rooster.values()).map(({name, score}) => (
+              {Array.from(roster.values()).map(({name, score}) => (
                 <TableRow
                   key={name}
-                  className={cn(players.has(name) ? "bg-muted" : "bg-inherit", "cursor-pointer")}
+                  className={cn(draft.has(name) ? "bg-muted" : "bg-inherit", "cursor-pointer")}
                   onClick={() => handleDraftToggle(name)}
                 >
                   <TableCell
@@ -181,7 +181,7 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
                     onClick={(event) => {
                       event.stopPropagation();
 
-                      handleRoosterRemove(name);
+                      handleRosterRemove(name);
                     }}
                   >
                     ✕
@@ -194,7 +194,7 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
           </Table>
         </CardContent>
         <CardFooter>
-          <form className="flex w-full items-center gap-4" onSubmit={handleRoosterAdd}>
+          <form className="flex w-full items-center gap-4" onSubmit={handleRosterAdd}>
             <Input required className="basis-full" name="name" placeholder="Name" />
             <Input
               required
@@ -205,7 +205,7 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
               placeholder="Score"
               type="number"
             />
-            <Button type="submit">Add to rooster</Button>
+            <Button type="submit">Add to roster</Button>
           </form>
         </CardFooter>
       </Card>
