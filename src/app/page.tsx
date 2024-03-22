@@ -44,44 +44,40 @@ function updateRooster(rooster: Map<Player["name"], Player>) {
   localStorage.setItem("rooster", JSON.stringify(Array.from(rooster.values())));
 }
 
-function getBalancedTeams(players: Player[]): [Player[], Player[]] {
-  let bestDiff = Infinity;
-  let teams: [Player[], Player[]] = [[], []];
-
-  for (let i = 0; i < 1 << players.length; i++) {
-    const teamA: Player[] = [];
-    const teamB: Player[] = [];
-    let sum1 = 0;
-    let sum2 = 0;
-
-    for (let j = 0; j < players.length; j++) {
-      if ((i & (1 << j)) !== 0) {
-        teamA.push(players[j]);
-        sum1 += players[j].score;
-      } else {
-        teamB.push(players[j]);
-        sum2 += players[j].score;
-      }
-    }
-
-    const diff = Math.abs(sum1 - sum2);
-
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      teams = [teamA, teamB] as const;
-    }
-  }
-
-  return teams;
-}
-
 export default function HomePage() {
   const [players, setPlayers] = useState(() => new Set<Player["name"]>());
   const [rooster, setRooster] = useState(getRooster);
   const [teamA, teamB] = useMemo(() => {
     const draft = Array.from(players).map((name) => rooster.get(name) || {name, score: 0});
 
-    return getBalancedTeams(draft);
+    let bestDiff = Infinity;
+    let teams: [Player[], Player[]] = [[], []];
+
+    for (let i = 0; i < 1 << draft.length; i++) {
+      const teamA: Player[] = [];
+      const teamB: Player[] = [];
+      let sum1 = 0;
+      let sum2 = 0;
+
+      for (let j = 0; j < draft.length; j++) {
+        if ((i & (1 << j)) !== 0) {
+          teamA.push(draft[j]);
+          sum1 += draft[j].score;
+        } else {
+          teamB.push(draft[j]);
+          sum2 += draft[j].score;
+        }
+      }
+
+      const diff = Math.abs(sum1 - sum2);
+
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        teams = [teamA, teamB] as const;
+      }
+    }
+
+    return teams;
   }, [players, rooster]);
 
   async function handlePaste() {
