@@ -66,11 +66,7 @@ function getBalancedTeams(players: Player[]): [Player[], Player[]] {
 
     const diff = Math.abs(sum1 - sum2);
 
-    if (
-      teamA.length === players.length / 2 &&
-      teamB.length === players.length / 2 &&
-      diff < bestDiff
-    ) {
+    if (diff < bestDiff) {
       bestDiff = diff;
       teams = [teamA, teamB] as const;
     }
@@ -144,6 +140,16 @@ export default function HomePage() {
     setPlayers(newDraft);
 
     updateRooster(newRooster);
+  }
+
+  function handleCopyTeams() {
+    navigator.clipboard.writeText(`Team A:
+${teamA.map(({name}) => `- ${name}`).join("\n")}
+
+Team B:
+${teamB.map(({name}) => `- ${name}`).join("\n")}`);
+
+    alert("Teams copied to clipboard");
   }
 
   return (
@@ -274,7 +280,9 @@ export default function HomePage() {
           <Button variant="secondary" onClick={handlePaste}>
             Paste from message
           </Button>
-          <Button variant="secondary">Copy teams</Button>
+          <Button variant="secondary" onClick={handleCopyTeams}>
+            Copy teams
+          </Button>
         </CardFooter>
       </Card>
     </main>
