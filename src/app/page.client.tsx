@@ -161,7 +161,7 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
           <CardDescription>List of players on the rooster</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table ref={roosterTable} className="max-h-96 overflow-y-auto border">
+          <Table ref={roosterTable} className="h-96 overflow-y-auto border">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[32px] text-right" />
@@ -215,68 +215,72 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
           <CardDescription>Players for each team are decided based on its score</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
-          <Table className="border">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead className="text-right">Score</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {teamA.map((player) => (
-                <TableRow
-                  key={player.name}
-                  className={cn(
-                    player.score === 0 ? "bg-amber-500/5 hover:bg-amber-500/10" : "bg-inherit",
-                    "cursor-pointer",
-                  )}
-                  onClick={() => handleDraftToggle(player.name)}
-                >
-                  <TableCell className="font-medium capitalize">{player.name}</TableCell>
-                  <TableCell className="text-right">{player.score} ★</TableCell>
+          <div className="grid content-between gap-2">
+            <Table className="border">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="text-right">Score</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableHeader>
+              <TableBody>
+                {teamA.map((player) => (
+                  <TableRow
+                    key={player.name}
+                    className={cn(
+                      player.score === 0 ? "bg-amber-500/5 hover:bg-amber-500/10" : "bg-inherit",
+                      "cursor-pointer",
+                    )}
+                    onClick={() => handleDraftToggle(player.name)}
+                  >
+                    <TableCell className="font-medium capitalize">{player.name}</TableCell>
+                    <TableCell className="text-right">{player.score} ★</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
             <TableFooter>
-              <TableRow>
+              <TableRow className="flex justify-between">
                 <TableCell>Total</TableCell>
                 <TableCell className="text-right">
                   {teamA.reduce((total, player) => total + player.score, 0)} ★
                 </TableCell>
               </TableRow>
             </TableFooter>
-          </Table>
-          <Table className="border">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead className="text-right">Score</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {teamB.map((player) => (
-                <TableRow
-                  key={player.name}
-                  className={cn(
-                    player.score === 0 ? "bg-amber-500/5 hover:bg-amber-500/10" : "bg-inherit",
-                    "cursor-pointer",
-                  )}
-                  onClick={() => handleDraftToggle(player.name)}
-                >
-                  <TableCell className="font-medium capitalize">{player.name}</TableCell>
-                  <TableCell className="text-right">{player.score} ★</TableCell>
+          </div>
+          <div className="grid content-between gap-2">
+            <Table className="border">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="text-right">Score</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableHeader>
+              <TableBody>
+                {teamB.map((player) => (
+                  <TableRow
+                    key={player.name}
+                    className={cn(
+                      player.score === 0 ? "bg-amber-500/5 hover:bg-amber-500/10" : "bg-inherit",
+                      "cursor-pointer",
+                    )}
+                    onClick={() => handleDraftToggle(player.name)}
+                  >
+                    <TableCell className="font-medium capitalize">{player.name}</TableCell>
+                    <TableCell className="text-right">{player.score} ★</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
             <TableFooter>
-              <TableRow>
+              <TableRow className="flex justify-between">
                 <TableCell>Total</TableCell>
                 <TableCell className="text-right">
                   {teamB.reduce((total, player) => total + player.score, 0)} ★
                 </TableCell>
               </TableRow>
             </TableFooter>
-          </Table>
+          </div>
         </CardContent>
         <CardFooter className="flex justify-between gap-4">
           <Button variant="secondary" onClick={handlePaste}>
