@@ -72,7 +72,11 @@ export default function HomePageClient() {
 
       const diff = Math.abs(sum1 - sum2);
 
-      if (diff < bestDiff) {
+      if (
+        diff < bestDiff ||
+        (diff === bestDiff &&
+          Math.abs(teamA.length - teamB.length) < Math.abs(teams[0].length - teams[1].length))
+      ) {
         bestDiff = diff;
         teams = [teamA, teamB] as const;
       }
