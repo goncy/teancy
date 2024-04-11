@@ -16,7 +16,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <header className="text-xl font-bold leading-[4rem]">
           <Link href="/">Teancy</Link>
         </header>
-        <main className="py-8">{children}</main>
+        <main className="py-0 sm:py-8">{children}</main>
         <footer className="text-center leading-[4rem] opacity-70">
           © {new Date().getFullYear()} Teancy
         </footer>
