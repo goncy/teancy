@@ -101,7 +101,19 @@ function HomePage() {
       return names.concat(player);
     }, []);
 
-    setDraft(new Set(names));
+    if (names.length) {
+      const newDraft = structuredClone(draft);
+
+      for (const name of names) {
+        newDraft.add(name);
+      }
+
+      setDraft(newDraft);
+    } else {
+      alert(
+        "No players found in the clipboard, you can copy a list of players from somewhre, including one player per line and we will add it to the draft.",
+      );
+    }
   }
 
   function handleRosterAdd(event: React.FormEvent<HTMLFormElement>) {
