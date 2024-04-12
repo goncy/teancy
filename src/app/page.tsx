@@ -150,10 +150,10 @@ function HomePage() {
   }
 
   function handleCopyTeams() {
-    navigator.clipboard.writeText(`Team A:
-${teamA.map(({name}) => `- ${name}`).join("\n")}
+    navigator.clipboard.writeText(`${teamA.map(({name}) => `- ${name}`).join("\n")}
 
-Team B:
+VS
+
 ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
 
     alert("Teams copied to clipboard");
