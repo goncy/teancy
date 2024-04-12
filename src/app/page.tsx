@@ -5,15 +5,7 @@ import dynamic from "next/dynamic";
 
 import {Alert, AlertDescription} from "@/components/ui/alert";
 import {Button} from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {
   Card,
   CardContent,
@@ -268,14 +260,14 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
                     ))}
                   </TableBody>
                 </Table>
-                <TableFooter>
-                  <TableRow className="flex justify-between">
-                    <TableCell>Total</TableCell>
-                    <TableCell className="text-right">
+                <div className="bg-muted/50 p-4 font-medium ">
+                  <div className="flex justify-between">
+                    <p>Total</p>
+                    <p className="text-right">
                       {teamA.reduce((total, player) => total + player.score, 0)} ★
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="grid content-between gap-2">
                 <Table className="border">
@@ -303,14 +295,14 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
                     ))}
                   </TableBody>
                 </Table>
-                <TableFooter>
-                  <TableRow className="flex justify-between">
-                    <TableCell>Total</TableCell>
-                    <TableCell className="text-right">
+                <div className="bg-muted/50 p-4 font-medium">
+                  <div className="flex justify-between">
+                    <p>Total</p>
+                    <p className="text-right">
                       {teamB.reduce((total, player) => total + player.score, 0)} ★
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
