@@ -91,11 +91,12 @@ function HomePage() {
     const clipboard = await navigator.clipboard.readText();
 
     const names = clipboard.split("\n").reduce<string[]>((names, line) => {
-      const rawPlayer = /\d*- (.*)\n?/gi.exec(line)?.[1];
+      const player = line
+        .replace(/^(?:\*|-|\d*-)|✅|^\s*vs\s*$/gi, "")
+        .trim()
+        .toLowerCase();
 
-      if (!rawPlayer) return names;
-
-      const player = rawPlayer.replace("✅", "").trim().toLowerCase();
+      if (!player) return names;
 
       return names.concat(player);
     }, []);
@@ -313,7 +314,7 @@ ${teamB.map(({name}) => `- ${name}`).join("\n")}`);
         </CardContent>
         <CardFooter className="flex justify-between gap-4">
           <Button variant="secondary" onClick={handlePaste}>
-            Paste from message
+            Paste from list
           </Button>
           <Button disabled={!draft.size} variant="secondary" onClick={handleCopyTeams}>
             Copy teams
