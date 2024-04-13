@@ -30,8 +30,8 @@ export default async function OpenGraphImage() {
         }}
       >
         <span style={{fontSize: 256, height: 256, marginTop: -100}}>🤝</span>
-        <div style={{marginTop: 32, fontSize: 62, fontWeight: "bold"}}>Teancy</div>
-        <div style={{marginTop: 6, fontSize: 24, fontWeight: "normal"}}>
+        <div style={{marginTop: 32, fontSize: 80, fontWeight: "bold"}}>Teancy</div>
+        <div style={{marginTop: 6, fontSize: 36, fontWeight: "normal"}}>
           Create balanced teams for all things
         </div>
       </div>
