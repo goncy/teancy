@@ -5,6 +5,7 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.METADATA_BASE!),
   title: "Teancy",
   description:
     "Create balanced teams for all things. Add players to the roster, select the ones you want to include, and let Teancy do the rest.",
